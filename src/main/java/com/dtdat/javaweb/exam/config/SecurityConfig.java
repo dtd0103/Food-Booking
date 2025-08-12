@@ -22,8 +22,8 @@ public class SecurityConfig {
 		http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/admin**").authenticated()
 						.requestMatchers("uploads/**").permitAll().anyRequest().permitAll())
-				.formLogin(form -> form.loginPage("/login.html").defaultSuccessUrl("/admin.html", true).permitAll()
-						.failureUrl("/login.html?error").permitAll())
+				.formLogin(form -> form.loginPage("/login.html").defaultSuccessUrl("/admin.html?success", true)
+						.permitAll().failureUrl("/login.html?error").permitAll())
 				.logout(logout -> logout.logoutUrl("/logout").invalidateHttpSession(true).deleteCookies("JSESSIONID")
 						.logoutSuccessUrl("/login.html?logout").permitAll());
 

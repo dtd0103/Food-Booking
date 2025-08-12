@@ -8,5 +8,5 @@ import com.dtdat.javaweb.exam.entity.Admin;
 public interface AdminMapper {
 	Admin findByUsername(String username);
 
-	void insertAdmin(Admin admin);
+	void updatePassword(String username, String newPassword);
 }

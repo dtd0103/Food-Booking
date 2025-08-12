@@ -8,10 +8,10 @@
 		FROM admin
 		WHERE username = #{username}
 	</select>
-	
-	<insert id="insertAdmin" parameterType="com.dtdat.javaweb.exam.entity.Admin">
-		INSERT INTO
-		admin (username, password)
-		VALUES (#{username}, #{password})
-	</insert>
+
+	<update id="updatePassword">
+		UPDATE admin
+		SET password = #{newPassword}
+		WHERE username = #{username}
+	</update>
 </mapper>

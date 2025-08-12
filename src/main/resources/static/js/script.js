@@ -9,19 +9,49 @@ export let currentSort = "";
 export let currentType = "food";
 export let currentSearch = "";
 
+
+function showSkeletonLoaders(count) {
+	const foodList = document.querySelector('.food-list');
+	foodList.innerHTML = '';
+	for (let i = 0; i < count; i++) {
+		const skeletonItemHTML = `
+			<div class="food-item skeleton">
+				<div class="skeleton-image"></div>
+				<div class="food-item-info">
+					<div class="skeleton-text skeleton-text-short"></div>
+					<div class="skeleton-text skeleton-text-medium"></div>
+					<div class="skeleton-text skeleton-text-price"></div>
+					<div class="food-item-action skeleton-action">
+						<div class="skeleton-button"></div>
+						<div class="skeleton-input"></div>
+					</div>
+				</div>
+			</div>
+		`;
+		foodList.insertAdjacentHTML('beforeend', skeletonItemHTML);
+	}
+}
+
 // Fetch data
 document.addEventListener("DOMContentLoaded", () => {
 	loadFoods(1, 4, "", "food", "");
 	updateBasketSummary();
 });
 
-export async function loadFoods(page = 1, size = 4, sort = "", type = "food", search = "") {
+export async function loadFoods(page = 1, size = 4, sort = "", type = "food", search = "", status = "1") {
 	currentPage = page;
 	currentSize = size;
 	currentSort = sort;
 	currentType = type;
 	currentSearch = search;
-	const data = await fetchFood(page, size, sort, type, search);
+
+	showSkeletonLoaders(currentSize);
+
+
+	await new Promise(resolve => setTimeout(resolve, 300));
+
+
+	const data = await fetchFood(page, size, sort, type, search, status);
 	renderFoods(data);
 }
 
@@ -68,14 +98,14 @@ heroSearchInputField.addEventListener('keydown', (e) => {
 // Picker
 const foodPicker = document.querySelector('.food-picker');
 foodPicker.addEventListener('click', () => {
-	loadFoods(1, currentSize, currentSort, "food");
+	loadFoods(1, currentSize, currentSort, "food", currentSearch);
 	foodPicker.classList.toggle('active');
 	drinkPicker.classList.toggle('active');
 });
 
 const drinkPicker = document.querySelector('.drink-picker');
 drinkPicker.addEventListener('click', () => {
-	loadFoods(1, currentSize, currentSort, "drink");
+	loadFoods(1, currentSize, currentSort, "drink", currentSearch);
 	foodPicker.classList.toggle('active');
 	drinkPicker.classList.toggle('active');
 });
@@ -98,13 +128,13 @@ sortField.addEventListener('click', () => {
 });
 
 document.querySelector('.low-to-high').addEventListener('click', () => {
-	loadFoods(1, currentSize, "price_asc", currentType);
+	loadFoods(1, currentSize, "price_asc", currentType, currentSearch);
 	sortField.querySelector('span').textContent = 'Price: From low to high';
 	sortOption.classList.remove('show');
 });
 
 document.querySelector('.high-to-low').addEventListener('click', () => {
-	loadFoods(1, currentSize, "price_desc", currentType);
+	loadFoods(1, currentSize, "price_desc", currentType, currentSearch);
 	sortField.querySelector('span').textContent = 'Price: From high to low';
 	sortOption.classList.remove('show');
 });
@@ -139,25 +169,6 @@ window.addEventListener('scroll', function() {
 	}
 });
 
-// Show more item in order popup
-const showMoreBtn = document.querySelector('.order-show-more');
-const showMoreIcon = document.querySelector('.show-more-icon');
-const orderItemList = document.querySelector('.order-list');
-let isShowMore = false;
-showMoreBtn.addEventListener('click', () => {
-	if (!isShowMore) {
-		isShowMore = true;
-		orderItemList.style.maxHeight = '390px';
-		orderItemList.style.overflowY = 'scroll';
-		showMoreIcon.src = "/images/double-arrow-up.svg";
-	}
-	else {
-		isShowMore = false;
-		orderItemList.style.maxHeight = '162px';
-		orderItemList.style.overflowY = 'hidden';
-		showMoreIcon.src = "/images/double-arrow.svg";
-	}
-})
 
 // Popup Event
 const basketBtn = document.querySelector('.basket-logo');
@@ -236,7 +247,3 @@ document.addEventListener('DOMContentLoaded', () => {
 		addItemToBasketBtn.innerHTML = `Add to Basket ${price * itemCnt} - <span>đ</span>`;
 	}
 });
-
-
-
-

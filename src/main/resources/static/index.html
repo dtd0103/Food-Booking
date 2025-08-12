@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Food Booking</title>
 	<link rel="stylesheet" href="/css/style.css" />
+	<link rel="stylesheet" href="/css/toast.css" />
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 	<link
@@ -17,7 +18,7 @@
 <body>
 	<header>
 		<div class="header-inner">
-			<a href="/index.html"><img src="/images/logo.png" class="logo" alt="" /></a>
+			<a href="/index.html"><img src="/images/logo-admin.png" class="logo" alt="" /></a>
 			<form id="top-search-input" class="search-inner top">
 				<img src="/images/union.svg" alt="Search Icon" class="search-icon" />
 				<input type="text" placeholder="Find your favorite food..." class="search-input" value="" />
@@ -160,6 +161,8 @@
 				<div class="order-popup-title">Your Order</div>
 				<img src="/images/out-icon.svg" class="order-popup-close" />
 			</div>
+
+			<div id="orderStatusText"></div>
 
 			<div class="steper">
 				<div class="steper-phases">

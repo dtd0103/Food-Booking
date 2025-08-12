@@ -17,11 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dtdat.javaweb.exam.entity.Order;
 import com.dtdat.javaweb.exam.dto.OrderCreateDTO;
 import com.dtdat.javaweb.exam.dto.OrderStatusUpdateDTO;
-
+import com.dtdat.javaweb.exam.entity.Order;
 import com.dtdat.javaweb.exam.service.OrderService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -46,16 +47,15 @@ public class OrderController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Map<String, Object>> getOrders(@RequestParam(defaultValue = "1") int page, // Bắt đầu trang từ
-																										// 1
-			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "createdAt") String sortBy,
-			@RequestParam(defaultValue = "desc") String sortDir, @RequestParam(required = false) String status,
-			@RequestParam(required = false) Integer orderId,
+	public ResponseEntity<Map<String, Object>> getOrders(@RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String sortBy,
+			@RequestParam(defaultValue = "") String sortDir, @RequestParam(required = false) List<String> status,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+			@RequestParam(required = false) String search) {
 
-		Map<String, Object> response = orderService.getPagedOrders(status, orderId, startDate, endDate, page, size,
-				sortBy, sortDir);
+		Map<String, Object> response = orderService.getPagedOrders(status, startDate, endDate, page, size, sortBy,
+				sortDir, search);
 		return ResponseEntity.ok(response);
 	}
 
@@ -66,7 +66,7 @@ public class OrderController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Integer> createOrder(@RequestBody OrderCreateDTO request) {
+	public ResponseEntity<Integer> createOrder(@RequestBody @Valid OrderCreateDTO request) {
 		int orderId = orderService.create(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(orderId);
 	}

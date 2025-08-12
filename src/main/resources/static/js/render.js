@@ -1,4 +1,4 @@
-import { loadFoods, currentPage, currentSize, currentSort, currentType } from './script.js';
+import { loadFoods, currentPage, currentSize, currentSort, currentType, currentSearch } from './script.js';
 import { checkBasketContain, addToBasket, getBasket, saveBasket, removeFromBasket, getBasketWithDetails } from './basket.js';
 import { fetchFoodById, fetchOrderById } from './api.js';
 import { showToast } from './toast.js';
@@ -91,7 +91,7 @@ export function renderFoods(data) {
 				saveBasket(basket);
 				countEl.textContent = item.quantity;
 				updateBasketSummary();
-				showToast('error', 'Update item quantity', 'Item quantity updated.');
+				showToast('success', 'Update item quantity', 'Item quantity updated.');
 			}
 		};
 
@@ -99,7 +99,7 @@ export function renderFoods(data) {
 			removeFromBasket(id);
 			loadFoods(currentPage, currentSize, currentSort, currentType);
 			updateBasketSummary();
-			showToast('warning', 'Remove item from cart', 'Item removed from your cart.');
+			showToast('success', 'Remove item from cart', 'Item removed from your cart.');
 		};
 	});
 
@@ -113,22 +113,22 @@ function renderPagination(currentPage, totalPages, totalItems) {
 	const container = document.querySelector('.pagination');
 	container.innerHTML = '';
 	const prevBtn = document.createElement('button');
-	prevBtn.innerHTML = '&lt;';
+	prevBtn.innerHTML = '&lt';
 	prevBtn.className = 'pagination-btn';
 	prevBtn.disabled = currentPage === 1;
 	prevBtn.addEventListener('click', () => {
 		if (currentPage > 1) {
-			loadFoods(currentPage - 1, currentSize, currentSort, currentType);
+			loadFoods(currentPage - 1, currentSize, currentSort, currentType, currentSearch);
 		}
 	});
 	container.appendChild(prevBtn);
 	const createPageBtn = (i) => {
 		const btn = document.createElement('button');
 		btn.textContent = i + 1;
-		btn.className = 'pagination-btn';
+		btn.className = 'pagination-btn nums';
 		if (i + 1 === currentPage) btn.classList.add('active');
 		btn.addEventListener('click', () => {
-			loadFoods(i + 1, currentSize, currentSort, currentType);
+			loadFoods(i + 1, currentSize, currentSort, currentType, currentSearch);
 		});
 		container.appendChild(btn);
 	};
@@ -150,12 +150,12 @@ function renderPagination(currentPage, totalPages, totalItems) {
 		}
 	}
 	const nextBtn = document.createElement('button');
-	nextBtn.innerHTML = '&gt;';
+	nextBtn.innerHTML = '&gt';
 	nextBtn.className = 'pagination-btn';
 	nextBtn.disabled = currentPage === totalPages;
 	nextBtn.addEventListener('click', () => {
 		if (currentPage < totalPages) {
-			loadFoods(currentPage + 1, currentSize, currentSort, currentType);
+			loadFoods(currentPage + 1, currentSize, currentSort, currentType, currentSearch);
 		}
 	});
 	container.appendChild(nextBtn);
@@ -164,7 +164,7 @@ function renderPagination(currentPage, totalPages, totalItems) {
 		const selectedOption = this.options[this.selectedIndex];
 		const value = selectedOption.value;
 		console.log(value);
-		loadFoods(currentPage, value, currentSort, currentType);
+		loadFoods(currentPage, value, currentSort, currentType, currentSearch);
 	});
 
 	totalItemContainer.textContent = `Total ${totalItems} items`;
@@ -191,7 +191,7 @@ export async function renderItemPopup(foodId) {
 		<div class="item-popup-price">${food.price.toLocaleString('vi-VN')} <span>đ</span></div>`;
 
 	addItemToBasketBtn.dataset.price = food.price;
-	addItemToBasketBtn.innerHTML = `Add to Basket ${food.price} - <span>đ</span>`;
+	addItemToBasketBtn.innerHTML = `Add to Basket - ${food.price.toLocaleString('vi-VN')} <span>đ</span>`;
 
 	itemPopup.classList.add("show");
 	document.querySelector('.overlay').classList.add("show");
@@ -357,25 +357,51 @@ document.addEventListener('DOMContentLoaded', () => {
 		{ icon: stepperIcon4, line: null, name: 'completed', finished: '/images/steper-finished.svg', progress: '/images/steper-progress.svg', new: '/images/stepper-new.svg' }
 	];
 
+	const orderStatusTextElement = document.getElementById('orderStatusText');
+	const steperEl = document.querySelector('.steper');
+
 	function updateOrderStatus(status) {
-			let foundCurrentStatus = false;
+		console.log(status);
+		if (status === 'cancel') {
+			if (steperEl) steperEl.style.display = 'none';
+			if (orderStatusTextElement) {
+				orderStatusTextElement.textContent = 'Order has been Canceled';
+				orderStatusTextElement.style.display = 'block';
+			}
 			statusIcons.forEach((step) => {
-				if (step.name === status) {
-					foundCurrentStatus = true;
-					if (step.icon) {
-						step.icon.src = (step.name === 'completed') ? step.finished : step.progress;
-					}
-					if (step.line) step.line.classList.remove('finished'); 
-				} else if (!foundCurrentStatus) {
-					if (step.icon) step.icon.src = step.finished;
-					if (step.line) step.line.classList.add('finished');
-				} else {
-					if (step.icon) step.icon.src = step.new;
-					if (step.line) step.line.classList.remove('finished');
-				}
+				if (step.icon) step.icon.style.display = 'none';
+				if (step.line) step.line.style.display = 'none';
 			});
+			return;
 		}
 
+		if (steperEl) steperEl.style.display = '';
+		if (orderStatusTextElement) {
+			orderStatusTextElement.textContent = '';
+			orderStatusTextElement.style.display = 'none';
+		}
+		statusIcons.forEach((step) => {
+			if (step.icon) step.icon.style.display = '';
+			if (step.line) step.line.style.display = '';
+		});
+
+		let foundCurrentStatus = false;
+		statusIcons.forEach((step) => {
+			if (step.name === status) {
+				foundCurrentStatus = true;
+				if (step.icon) {
+					step.icon.src = (step.name === 'completed') ? step.finished : step.progress;
+				}
+				if (step.line) step.line.classList.remove('finished');
+			} else if (!foundCurrentStatus) {
+				if (step.icon) step.icon.src = step.finished;
+				if (step.line) step.line.classList.add('finished');
+			} else {
+				if (step.icon) step.icon.src = step.new;
+				if (step.line) step.line.classList.remove('finished');
+			}
+		});
+	}
 
 	const hideOrderContent = () => {
 		const steperEl = document.querySelector('.steper');
@@ -383,10 +409,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		const orderPriceInfos = document.querySelectorAll('.order-price-info');
 		const orderTotalEl = document.querySelector('.order-total');
 		const lineEl = document.querySelector('.form-bottom > .line');
-		const orderCodeDiv = document.querySelector('.order-code'); 
+		const orderCodeDiv = document.querySelector('.order-code');
 
 		if (steperEl) steperEl.style.display = 'none';
-		if (orderCodeDiv) orderCodeDiv.style.display = 'none'; 
+		if (orderCodeDiv) orderCodeDiv.style.display = 'none';
 		if (orderShowMoreEl) orderShowMoreEl.style.display = 'none';
 		orderPriceInfos.forEach(el => { if (el) el.style.display = 'none'; });
 		if (orderTotalEl) orderTotalEl.style.display = 'none';
@@ -402,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		const lineEl = document.querySelector('.form-bottom > .line');
 		const orderCodeDiv = document.querySelector('.order-code');
 
-		if (steperEl) steperEl.style.display = ''; 
+		if (steperEl) steperEl.style.display = '';
 		if (orderCodeDiv) orderCodeDiv.style.display = '';
 		if (orderShowMoreEl) orderShowMoreEl.style.display = '';
 		orderPriceInfos.forEach(el => { if (el) el.style.display = ''; });
@@ -415,9 +441,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		const lastOrderId = sessionStorage.getItem('lastOrderId');
 
 		if (!lastOrderId) {
-			showToast('error', 'Order not found', 'No recent orders in history.');
+			showToast('warning', 'Order not found', 'No recent orders in history. Please choose food and process to check out.');
 			if (orderPopup) orderPopup.classList.remove('show');
-			document.querySelector('.overlay').classList.remove('show'); 
+			document.querySelector('.overlay').classList.remove('show');
 			return;
 		}
 
@@ -428,10 +454,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 		if (orderCodeSpan) orderCodeSpan.textContent = `#${lastOrderId}`;
-		hideOrderContent(); 
+		hideOrderContent();
 		if (orderItemsList) {
 			orderItemsList.innerHTML = '<p style="text-align: center; padding: 20px;">Loading...</p>';
-			orderItemsList.style.display = ''; 
+			orderItemsList.style.display = '';
 		}
 
 		let order = null;
@@ -444,14 +470,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		} catch (error) {
 			console.error('Error loading order details:', error);
-			hideOrderContent(); 
+			hideOrderContent();
 			if (orderItemsList) {
 				orderItemsList.innerHTML = `
-                    <div class="order-error-message" style="text-align: center; padding: 20px; color: red;">
-                        <h3>Unable to load order details #${lastOrderId}.</h3>
-                        <p>An error occurred while retrieving data. Please try again later or contact support.</p>
-                    </div>
-                `;
+					<div class="order-error-message" style="text-align: center; padding: 20px; color: red;">
+						<h3>Unable to load order details #${lastOrderId}.</h3>
+						<p>An error occurred while retrieving data. Please try again later or contact support.</p>
+					</div>
+				`;
 				orderItemsList.style.display = '';
 			}
 			showToast('error', 'Order loading error', `Unable to load order details #${lastOrderId}.`);
@@ -459,9 +485,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 
-		showOrderContent(); 
+		showOrderContent();
 		if (orderItemsList) {
-			orderItemsList.innerHTML = ''; 
+			orderItemsList.innerHTML = '';
 		}
 
 		if (orderCodeSpan) orderCodeSpan.textContent = `#${order.id}`;
@@ -469,40 +495,43 @@ document.addEventListener('DOMContentLoaded', () => {
 		let renderedItemsCount = 0;
 
 		for (const item of order.items) {
-			const productDetail = item.food; 
-			const orderItemQuantity = item.quantity; 
+			const productDetail = item.food;
+			const orderItemQuantity = item.quantity;
 
 			if (productDetail) {
 				const div = document.createElement('div');
 				div.className = 'order-item';
 				div.innerHTML = `
-                    <img class="item-img" src="/uploads/images/${productDetail.type === 'food' ? 'foods' : 'drinks'}/${productDetail.image}">
-                    <div class="item-info">
-                        <div class="item-name">${productDetail.name || 'No name'}</div>
-                        <p class="item-desc">${productDetail.description || 'No description.'}</p>
-                    </div>
-                    <div class="item-right">
-                        <div class="item-price">${productDetail.price.toLocaleString('vi-VN')} <span>đ</span></div> <div class="item-quantity">Quantity: <div>${orderItemQuantity}</div></div>
-                    </div>
-                `;
+					<img class="item-img" src="/uploads/images/${productDetail.type === 'food' ? 'foods' : 'drinks'}/${productDetail.image}">
+					<div class="item-info">
+						<div class="item-name">${productDetail.name || 'No name'}</div>
+						<p class="item-desc">${productDetail.description || 'No description.'}</p>
+					</div>
+					<div class="item-right">
+						<div class="item-price">${productDetail.price.toLocaleString('vi-VN')} <span>đ</span></div> <div class="item-quantity">Quantity: <div>${orderItemQuantity}</div></div>
+					</div>
+				`;
 				if (orderItemsList) orderItemsList.appendChild(div);
 				renderedItemsCount++;
 			}
 		}
 
-
-		if (orderShowMoreBtn && orderItemsList) {
-			if (renderedItemsCount > 3) {
-				orderShowMoreBtn.style.display = 'block';
-				orderItemsList.style.maxHeight = '250px';
-				if (showMoreIcon) showMoreIcon.classList.remove('rotated');
-			} else {
-				orderShowMoreBtn.style.display = 'none';
-				orderItemsList.style.maxHeight = 'none';
+		const showMoreBtn = document.querySelector('.order-show-more'); const showMoreIcon = document.querySelector('.show-more-icon');
+		let isShowMore = false;
+		showMoreBtn.addEventListener('click', () => {
+			if (!isShowMore) {
+				isShowMore = true;
+				orderItemsList.style.maxHeight = '390px';
+				orderItemsList.style.overflowY = 'scroll';
+				showMoreIcon.src = "/images/double-arrow-up.svg";
 			}
-		} else if (orderShowMoreBtn) {
-			orderShowMoreBtn.style.display = 'none';
-		}
+			else {
+				isShowMore = false;
+				orderItemsList.style.maxHeight = '162px';
+				orderItemsList.style.overflowY = 'hidden';
+				showMoreIcon.src = "/images/double-arrow.svg";
+			}
+		})
 
 
 		if (totalItemsPriceEl) totalItemsPriceEl.textContent = `${order.total.toLocaleString('vi-VN')}`;
@@ -526,18 +555,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		orderPopupCloseBtn.addEventListener('click', () => {
 			orderPopup.classList.remove('show');
 			document.querySelector('.overlay').classList.remove('show');
-		});
-	}
-
-	if (orderShowMoreBtn && orderItemsList && showMoreIcon) {
-		orderShowMoreBtn.addEventListener('click', () => {
-			if (orderItemsList.style.maxHeight === '250px') {
-				orderItemsList.style.maxHeight = 'none';
-				showMoreIcon.classList.add('rotated');
-			} else {
-				orderItemsList.style.maxHeight = '250px';
-				showMoreIcon.classList.remove('rotated');
-			}
 		});
 	}
 });

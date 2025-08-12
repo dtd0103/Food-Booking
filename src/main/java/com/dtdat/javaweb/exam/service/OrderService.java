@@ -1,24 +1,24 @@
 package com.dtdat.javaweb.exam.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dtdat.javaweb.exam.entity.Order;
-import com.dtdat.javaweb.exam.entity.Ward;
-import com.dtdat.javaweb.exam.entity.Food;
 import com.dtdat.javaweb.exam.dto.OrderCreateDTO;
 import com.dtdat.javaweb.exam.dto.OrderItemDTO;
-import com.dtdat.javaweb.exam.repository.OrderRepository;
+import com.dtdat.javaweb.exam.entity.Food;
+import com.dtdat.javaweb.exam.entity.Order;
+import com.dtdat.javaweb.exam.entity.Ward;
 import com.dtdat.javaweb.exam.repository.FoodRepository;
+import com.dtdat.javaweb.exam.repository.OrderRepository;
 import com.dtdat.javaweb.exam.repository.WardRepository;
 
 @Service
@@ -45,8 +45,8 @@ public class OrderService {
 		return orderRepository.getSalesChartData(startDateTime, endDateTime, period);
 	}
 
-	public Map<String, Object> getPagedOrders(String status, Integer orderId, LocalDate startDate, LocalDate endDate,
-			int page, int size, String sortBy, String sortDir) {
+	public Map<String, Object> getPagedOrders(List<String> status, LocalDate startDate, LocalDate endDate, int page,
+			int size, String sortBy, String sortDir, String search) {
 		int offset = (page - 1) * size;
 		if (offset < 0)
 			offset = 0;
@@ -54,9 +54,9 @@ public class OrderService {
 		LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
 		LocalDateTime endDateTime = endDate != null ? endDate.atTime(LocalTime.MAX) : null;
 
-		List<Order> orders = orderRepository.getOrders(status, orderId, startDateTime, endDateTime, offset, size,
-				sortBy, sortDir);
-		int totalElements = orderRepository.countOrders(status, orderId, startDateTime, endDateTime);
+		List<Order> orders = orderRepository.getOrders(status, startDateTime, endDateTime, offset, size, sortBy,
+				sortDir, search);
+		int totalElements = orderRepository.countOrders(status, startDateTime, endDateTime, search);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("content", orders);
@@ -78,38 +78,71 @@ public class OrderService {
 	}
 
 	@Transactional
-    public int create(OrderCreateDTO orderCreateDTO) {
-        BigDecimal calculatedTotal = BigDecimal.ZERO;
-        if (orderCreateDTO.getItems() != null) {
-            for (OrderItemDTO item : orderCreateDTO.getItems()) {
-                Food food = foodRepository.getFoodById(item.getFoodId());
-                if (food == null || !food.isStatus()) {
-                    throw new IllegalArgumentException("Food not found or inactive with ID: " + item.getFoodId());
-                }
-                calculatedTotal = calculatedTotal.add(food.getPrice().multiply(new BigDecimal(item.getQuantity())));
-            }
-        }
+	public int create(OrderCreateDTO orderCreateDTO) {
+		BigDecimal calculatedTotal = BigDecimal.ZERO;
+		if (orderCreateDTO.getItems() != null) {
+			for (OrderItemDTO item : orderCreateDTO.getItems()) {
+				Food food = foodRepository.getFoodById(item.getFoodId());
+				if (food == null || !food.isStatus()) {
+					throw new IllegalArgumentException("Food not found or inactive with ID: " + item.getFoodId());
+				}
+				calculatedTotal = calculatedTotal.add(food.getPrice().multiply(new BigDecimal(item.getQuantity())));
+			}
+		}
 
-        orderCreateDTO.setTotal(calculatedTotal);
+		orderCreateDTO.setTotal(calculatedTotal);
 
-        Ward ward = wardRepository.getById(orderCreateDTO.getWardId());
-        if (ward == null) {
-            throw new IllegalArgumentException("Ward not found with ID: " + orderCreateDTO.getWardId());
-        }
-        orderCreateDTO.setShippingFee(ward.getShippingFee());
+		Ward ward = wardRepository.getById(orderCreateDTO.getWardId());
+		if (ward == null) {
+			throw new IllegalArgumentException("Ward not found with ID: " + orderCreateDTO.getWardId());
+		}
+		orderCreateDTO.setShippingFee(ward.getShippingFee());
 
-        orderRepository.insertOrder(orderCreateDTO);
+		orderRepository.insertOrder(orderCreateDTO);
 
-        int orderId = orderCreateDTO.getId();
+		int orderId = orderCreateDTO.getId();
 
-        if (orderCreateDTO.getItems() != null && !orderCreateDTO.getItems().isEmpty()) {
-            orderRepository.insertOrderItems(orderId, orderCreateDTO.getItems());
-        }
+		if (orderCreateDTO.getItems() != null && !orderCreateDTO.getItems().isEmpty()) {
+			orderRepository.insertOrderItems(orderId, orderCreateDTO.getItems());
+		}
 
-        return orderId; 
-    }
+		return orderId;
+	}
 
 	public void updateOrderStatus(int orderId, String newState) {
+		Order order = orderRepository.getOrderById(orderId);
+
+		if (order == null) {
+			throw new IllegalArgumentException("Order not found with ID: " + orderId);
+		}
+
+		String currentState = order.getState();
+
+		if (!isValidTransition(currentState, newState)) {
+			throw new IllegalArgumentException(
+					"Invalid status change from '" + currentState + "' to '" + newState + "'");
+		}
+
+
 		orderRepository.updateOrderState(orderId, newState);
+	}
+
+
+	private boolean isValidTransition(String currentState, String newState) {
+		if (currentState == null || newState == null || currentState.equals(newState)) {
+			return false;
+		}
+
+		switch (currentState) {
+		case "new":
+			return newState.equals("shipping") || newState.equals("cancel");
+		case "shipping":
+			return newState.equals("completed") || newState.equals("cancel");
+		case "completed":
+		case "cancel":
+			return false;
+		default:
+			return false;
+		}
 	}
 }

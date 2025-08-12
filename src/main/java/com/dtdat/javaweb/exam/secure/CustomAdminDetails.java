@@ -1,16 +1,16 @@
 package com.dtdat.javaweb.exam.secure;
 
-import java.util.Collection;
-import java.util.Collections;
-
+import com.dtdat.javaweb.exam.entity.Admin;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.dtdat.javaweb.exam.entity.Admin;
+import java.util.Arrays;
+import java.util.Collection;
 
 public class CustomAdminDetails implements UserDetails {
 
-	private final Admin admin;
+	private Admin admin;
 
 	public CustomAdminDetails(Admin admin) {
 		this.admin = admin;
@@ -18,7 +18,8 @@ public class CustomAdminDetails implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Collections.emptyList();
+
+		return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
 	}
 
 	@Override
@@ -49,5 +50,9 @@ public class CustomAdminDetails implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	public Admin getAdmin() {
+		return admin;
 	}
 }

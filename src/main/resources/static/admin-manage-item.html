@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Food Booking - Manage Item Page</title>
+	<link rel="stylesheet" href="/css/admin-manage-item.css" />
+	<link rel="stylesheet" href="/css/admin-navbar.css" />
+	<link rel="stylesheet" href="/css/toast.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+		rel="stylesheet" />
+	<link rel="icon" type="image/x-icon" href="/images/favicon.svg">
+</head>
+
+<body>
+	<header>
+		<div class="title">Manage Item</div>
+		<form class="search-inner">
+			<img src="/images/union.svg" alt="Search Icon" class="search-icon" />
+			<input type="text" placeholder="Search..." class="search-input" value="" id="search-food-input" />
+		</form>
+	</header>
+
+	<div class="toast-message"></div>
+
+	<nav class="navbar">
+		<a href="/index.html"><img src="/images/logo.png" class="logo" alt="" /></a>
+		<div class="navbar-items">
+			<div class="navbar-top">
+				<div class="navbar-item navbar-dashboard">
+					<img class="item-icon" src="/images/dashboard.svg" />
+					<div class="item-title">Dashboard</div>
+				</div>
+				<div class="navbar-item navbar-manage active">
+					<img class="item-icon" src="/images/item-active.svg" />
+					<div class="item-title">Manage Item</div>
+				</div>
+			</div>
+			<div class="navbar-bottom">
+				<div class="navbar-item navbar-password">
+					<img class="item-icon" src="/images/change-password.svg" />
+					<div class="item-title">Change Password</div>
+				</div>
+				<div class="navbar-item navbar-logout">
+					<img class="item-icon" src="/images/logout.svg" />
+					<div class="item-title">Log out</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<main>
+		<div class="container">
+			<div class="item-actions">
+				<div class="type-pickers" id="food-sort-picker">
+					<div class="type-picker" id="food">Food</div>
+					<div class="type-picker" id="drink">Drink</div>
+				</div>
+
+				<div class="add-food-btn" id="add-food-btn">
+					<div class="add-food-title">Create new item</div>
+					<img class="add-food-icon" src="/images/add-icon.svg" />
+				</div>
+			</div>
+
+			<table class="item-table">
+				<tr class="table-header">
+					<th>NO.</th>
+					<th>Image</th>
+					<th>Item Name</th>
+					<th>Description</th>
+					<th>Price</th>
+					<th>Status</th>
+					<th>Action</th>
+				</tr>
+				<tbody id="food-table-body">
+				</tbody>
+			</table>
+
+			<div class="pagination-container">
+				<span class="pagination-total-items">Total 200 items</span>
+
+				<ul class="pagination">
+
+				</ul>
+
+				<select class="page-size" id="page-size">
+					<option value="10">10 / page</option>
+					<option value="20">20 / page</option>
+					<option value="50">50 / page</option>
+				</select>
+			</div>
+		</div>
+
+		<form class="item-popup" id="create-item-popup">
+			<div class="item-popup-header">Create New Item</div>
+			<div class="line"></div>
+			<div class="image-type-input">
+				<img src="/images/image-placeholder.png" class="item-popup-img" />
+				<div class="image-input-actions">
+					<div class="image-input-desc">Please upload square image size less than 5MB</div>
+					<div class="upload-image-btn">Choose File</div>
+					<input type="file" id="create-image-file" name="imageFile" accept="image/*"
+						style="display: none;" />
+					<img src="/images/basket-close.svg" class="delete-food-img-btn" id="create-delete-img" />
+				</div>
+				<div class="type-pickers" id="food-create-picker">
+					<div class="type-picker" id="food-type">Food</div>
+					<div class="type-picker" id="drink-type">Drink</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="name">Item Name</label>
+				<input type="text" id="name" name="name" required />
+			</div>
+
+			<div class="form-group">
+				<label for="description">Description</label>
+				<textarea id="description" name="description" required></textarea>
+			</div>
+
+			<div class="form-group">
+				<label for="price">Price (vnđ)</label>
+				<input type="text" id="price" name="price" required />
+			</div>
+
+			<div class="line"></div>
+
+			<div class="form-action">
+				<button type="reset" class="form-button" id="form-create-cancel-btn" value="cancel">Cancel</button>
+				<button type="submit" class="form-button" id="form-create-submit-btn" value="order">Create</button>
+			</div>
+		</form>
+
+		<form class="item-popup" id="update-item-popup">
+			<div class="item-popup-header">Edit Item</div>
+			<div class="line"></div>
+			<div class="image-type-input">
+				<img src="/images/image-placeholder.png" class="item-popup-img" />
+				<div class="image-input-actions">
+					<div class="image-input-desc">Please upload square image size less than 5MB</div>
+					<div class="upload-image-btn">Choose File</div>
+					<input type="file" id="update-image-file" name="imageFile" accept="image/*"
+						style="display: none;" />
+					<img src="/images/basket-close.svg" class="delete-food-img-btn" id="update-delete-img" />
+				</div>
+				<div class="type-pickers" id="food-update-picker">
+					<div class="type-picker" id="update-food-type">Food</div>
+					<div class="type-picker" id="update-drink-type">Drink</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="name">Item Name</label>
+				<input type="text" id="update-name" name="name" required />
+			</div>
+
+			<div class="form-group">
+				<label for="description">Description</label>
+				<textarea id="update-description" name="description" required></textarea>
+			</div>
+
+			<div class="form-group">
+				<label for="price">Price (vnđ)</label>
+				<input type="text" id="update-price" name="price" required />
+			</div>
+
+			<div class="line"></div>
+
+			<div class="form-action">
+				<button type="reset" class="form-button" id="form-update-cancel-btn" value="cancel">Cancel</button>
+				<button type="submit" class="form-button" id="form-update-submit-btn" value="order">Confirm</button>
+			</div>
+		</form>
+
+		<div class="overlay"></div>
+	</main>
+
+	<script src="/js/navigate.js"></script>
+	<script type="module" src="/js/admin-manage-item.js"></script>
+</body>
+
+</html>

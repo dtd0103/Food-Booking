@@ -1,5 +1,6 @@
 import { fetchCity, fetchWardByCityId } from './api.js';
 import { getBasketWithDetails, clearBasket, isBasketEmpty } from './basket.js';
+import { showToast } from './toast.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('.form-cancel-btn').addEventListener('click', () => {
@@ -152,24 +153,30 @@ function setupOrderSubmission() {
 			});
 
 			if (response.ok) {
-				const orderId = await response.json(); 
+				const orderId = await response.json();
 
 				clearBasket();
 
-				sessionStorage.setItem('lastOrderId', orderId); 
+				sessionStorage.setItem('lastOrderId', orderId);
 
-				window.location.replace('order-success.html'); 
+				window.location.replace('order-success.html');
 			} else {
 				const errorData = await response.json();
-				console.error('Order creation failed:', errorData);
-				alert(`Failed to place order: ${errorData || 'Unknown error'}. Please try again.`);
+
+				for (const fieldName in errorData) {
+					if (errorData.hasOwnProperty(fieldName)) {
+						const errorMessage = errorData[fieldName];
+						showToast('error', fieldName, errorMessage)
+					}
+				}
 			}
 		} catch (error) {
-			console.error('Error submitting order:', error);
-			alert('An error occurred while placing your order.');
+			for (const fieldName in error) {
+				if (error.hasOwnProperty(fieldName)) {
+					const errorMessage = error[fieldName];
+					showToast('error', fieldName, errorMessage)
+				}
+			}
 		}
 	});
 }
-
-
-

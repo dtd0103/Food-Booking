@@ -1,18 +1,64 @@
+import { showToast } from './toast.js';
+
 document.addEventListener('DOMContentLoaded', function() {
 	const urlParams = new URLSearchParams(window.location.search);
-	const errorMessageDiv = document.getElementById('errorMessage');
-	const logoutMessageDiv = document.getElementById('logoutMessage');
+	const loginForm = document.getElementById('login-form');
+	const usernameInput = document.getElementById('username');
+	const passwordInput = document.getElementById('password');
 
-	if (urlParams.has('error')) {
-		errorMessageDiv.style.display = 'block';
-	} else {
-		errorMessageDiv.style.display = 'none';
+	function displayFieldError(inputElement, message) {
+
+		clearFieldError(inputElement);
+
+		const errorSpan = document.createElement('span');
+		errorSpan.className = 'field-error-message';
+		errorSpan.style.color = 'red';
+		errorSpan.textContent = message;
+
+		inputElement.parentNode.insertBefore(errorSpan, inputElement.nextSibling);
+
+
+		inputElement.value = '';
 	}
 
-	if (urlParams.has('logout')) {
-		logoutMessageDiv.style.display = 'block';
-	} else {
-		logoutMessageDiv.style.display = 'none';
+	function clearFieldError(inputElement) {
+		const existingError = inputElement.parentNode.querySelector('.field-error-message');
+		if (existingError) {
+			existingError.remove();
+		}
+	}
+
+	if (loginForm) {
+		loginForm.addEventListener('submit', function(event) {
+			clearFieldError(usernameInput);
+			clearFieldError(passwordInput);
+
+			let isValid = true;
+
+			if (usernameInput.value.trim() === '') {
+				displayFieldError(usernameInput, 'Please input account');
+				isValid = false;
+			}
+
+
+			if (passwordInput.value.trim() === '') {
+				displayFieldError(passwordInput, 'Please input password');
+				isValid = false;
+			}
+
+			if (!isValid) {
+				event.preventDefault();
+			}
+		});
+	}
+
+
+
+	if (urlParams.has('error')) {
+		showToast('error', 'Login Failed', 'Your password or account is incorrectly.');
+		passwordInput.value = '';
+	} else if (urlParams.has('logout')) {
+		showToast('success', 'Logout Successful', 'You have successfully logged out.');
 	}
 
 	if (urlParams.has('error') || urlParams.has('logout')) {

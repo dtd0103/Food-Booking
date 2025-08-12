@@ -1,0 +1,409 @@
+* {
+	box-sizing: border-box;
+	scroll-behavior: smooth;
+}
+
+html {
+	font-size: 62.5%;
+}
+
+body {
+	margin: 0;
+	font-family: "Poppins", sans-serif;
+	font-size: 1.6rem;
+	background: #FAFBFC;
+	scroll-behavior: smooth;
+}
+
+body::-webkit-scrollbar {
+	width: 8px;
+}
+
+body::-webkit-scrollbar-thumb {
+	background: #CED4DA;
+	border-radius: 3.5px;
+	cursor: pointer;
+}
+
+body::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.container {
+	position: relative;
+	margin-left: auto;
+	width: 84.375%;
+	height: 100%;
+	padding: 24px;
+}
+
+/* Actions */
+.item-actions {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 0;
+}
+
+.type-pickers {
+	display: flex;
+	background: #EFEFEF;
+	border-radius: 11.54px;
+	padding: 5.77px;
+	width: 127px;
+	height: fit-content;
+	align-items: center;
+}
+
+.type-picker {
+	border-radius: 5.77px;
+	padding: 8px;
+	font-weight: 400;
+	font-size: 1.7rem;
+	color: #7C7C7C;
+	cursor: pointer
+}
+
+.type-picker.active {
+	background: #fff;
+	color: #292929;
+	pointer-events: none;
+}
+
+.add-food-btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 24px;
+	background: #FF6B00;
+	height: 39px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: opacity 0.1s ease;
+}
+
+.add-food-btn:hover {
+	opacity: 0.9;
+}
+
+.add-food-title {
+	font-weight: 400;
+	font-size: 1.4rem;
+	line-height: 1.5;
+	color: #fff;
+}
+
+.item-table {
+	margin: 16px;
+	width: 1540px;
+	border-collapse: collapse;
+}
+
+.item-table tr {
+	height: 70px;
+	vertical-align: middle;
+	text-align: left;
+}
+
+.item-table td {
+	padding: 0 8px;
+	border: 1px solid #EFEFEF;
+}
+
+.item-table th:nth-child(6),
+.item-table td:nth-child(6) {
+	vertical-align: middle;
+	text-align: center;
+}
+
+.item-table td:nth-child(3) {
+	max-width: 300px;
+}
+
+.item-table td:nth-child(4) {
+	max-width: 700px;
+}
+
+.item-table tr:nth-child(odd) {
+	background: #B7B7B71A;
+}
+
+.table-header {
+	background: #B0B0B033;
+	height: 41px !important;
+	border-collapse: collapse;
+}
+
+.table-header th {
+	font-weight: 700;
+	font-size: 1.6rem;
+	line-height: 1.5;
+	color: #212529;
+	border: none;
+	text-align: start;
+	padding: 8px;
+}
+
+.item-img {
+	width: 48px;
+	height: 48px;
+	object-fit: cover;
+}
+
+.separate {
+	color: #21252940;
+}
+
+.delete-item-btn {
+	font-weight: 400;
+	line-height: 1.5;
+	color: #658280;
+	cursor: pointer;
+}
+
+.edit-item-btn {
+	font-weight: 400;
+	line-height: 1.5;
+	color: #0D6EFD;
+	cursor: pointer;
+}
+
+.delete-item-btn:hover,
+.edit-item-btn:hover {
+	text-decoration: underline;
+}
+
+/* Pop Up */
+.item-popup {
+	position: fixed;
+	z-index: 1001;
+	padding: 24px;
+	width: 900px;
+	border-radius: 16px;
+	top: 115px;
+	left: 510px;
+	background: #fff;
+	display: none;
+	opacity: 0;
+
+}
+
+.item-popup.show {
+	display: block;
+	opacity: 1;
+}
+
+.item-popup-header {
+	font-weight: 700;
+	font-size: 2.8rem;
+	line-height: 1.2;
+	padding: 8px 0;
+}
+
+.line {
+	width: 100%;
+	height: 1px;
+	background: #EFEFEF;
+	margin: 24px 0;
+}
+
+.image-type-input {
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+}
+
+.delete-food-img-btn {
+	position: absolute;
+	left: 116px;
+	top: -7px;
+	cursor: pointer;
+}
+
+
+.image-input-actions {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	margin-right: auto;
+	margin-left: 16px;
+}
+
+.image-input-desc {
+	font-weight: 300;
+	font-style: Italic;
+	font-size: 1.4rem;
+	line-height: 2.2;
+}
+
+.upload-image-btn {
+	font-weight: 400;
+	font-size: 1.4rem;
+	line-height: 1.5;
+	color: #FF6B00;
+	padding: 8px 24px;
+	border: 1px solid #FF6B00;
+	width: fit-content;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.item-popup-img {
+	width: 130px;
+	height: 130px;
+	border-radius: 6.5px;
+	object-fit: cover;
+}
+
+.form-group {
+	position: relative;
+	margin-top: 24px;
+}
+
+.form-group input,
+.form-group textarea {
+	width: 100%;
+	height: 56px;
+	border-radius: 4px;
+	border: 1px solid #CED4DA;
+	padding: 16px;
+
+	font-weight: 400;
+	font-size: 1.6rem;
+	line-height: 2.4;
+	letter-spacing: 0.5px;
+	vertical-align: middle;
+}
+
+.form-group label {
+	position: absolute;
+	top: -10px;
+	left: 9px;
+	z-index: 1000 !important;
+	font-weight: 400;
+	font-size: 1.2rem;
+	line-height: 1.6;
+	color: #656565;
+	background: #fff;
+	padding: 0 4px;
+}
+
+#description,
+#update-description {
+	height: 86px;
+	resize: vertical;
+	font-size: 1.4rem;
+	line-height: 1;
+	font-family: Poppins;
+}
+
+.overlay {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-color: #0000001A;
+	opacity: 0;
+	inset: 0px;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+	z-index: 1000;
+}
+
+.overlay.show {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.form-action {
+	display: flex;
+	gap: 24px;
+}
+
+.form-button {
+	width: 414px;
+	height: 59px;
+	padding: 16px;
+	border-radius: 4px;
+	border: none;
+
+	font-weight: 700;
+	font-size: 1.8rem;
+	line-height: 1.5;
+
+	cursor: pointer;
+}
+
+#form-create-cancel-btn,
+#form-update-cancel-btn {
+	color: #7C7C7C;
+	background: #EFEFEF;
+}
+
+#form-create-submit-btn,
+#form-update-submit-btn {
+	background: #FF6B00;
+	color: #FFF;
+}
+
+/* Pagination */
+.pagination-container {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	width: fit-content;
+	margin: 0 auto;
+	margin-top: 24px;
+	padding: 24px 0;
+}
+
+.total {
+	font-size: 14px;
+	color: #333;
+}
+
+.pagination {
+	display: flex;
+	list-style: none;
+	padding: 0;
+	border-radius: 4px;
+}
+
+.pagination button {
+	padding: 4px 10px;
+	border: 1px solid #CED4DA;
+	background: #fff;
+	cursor: pointer;
+	width: 30px;
+	height: 31px;
+}
+
+.pagination-btn.nums {
+	width: 36px;
+}
+
+.pagination button:first-child {
+	border-radius: 4px 0 0 4px;
+}
+
+.pagination button:last-child {
+	border-radius: 0 4px 0 4px;
+}
+
+.pagination button.active {
+	background: #fa541c;
+	color: white;
+	border: 1px solid #fa541c;
+	font-weight: bold;
+}
+
+.pagination span {
+	padding: 4px 10px;
+	color: #999;
+}
+
+.page-size {
+	padding: 4px 8px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}

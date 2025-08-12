@@ -8,16 +8,15 @@ import com.dtdat.javaweb.exam.entity.Food;
 
 @Mapper
 public interface FoodMapper {
-	List<Food> getFoodsPagedSorted(int offset, int limit, String sort, String type, String search);
+	List<Food> getFoodsPagedSorted(int offset, int limit, String sort, String type, String search, String status);
 
-	int countFoods(String type);
+	int countFoods(String type, String search, String status);
 
 	Food getFoodById(int id);
 
+	int createFood(Food food);
 
-	void createFood(Food food);
-	
 	int updateFood(Food food);
-	
+
 	int deleteFood(int id);
 }

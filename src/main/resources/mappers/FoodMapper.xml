@@ -1,82 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dtdat.javaweb.exam.mapper.FoodMapper">
-	<select id="getFoodsPagedSorted"
-	    resultType="com.dtdat.javaweb.exam.entity.Food">
-	    SELECT
-	        id,
-	        type,
-	        image,
-	        name,
-	        description,
-	        price,
-	        status
-	    FROM food
-	    <where> <if test="type != null and type != ''">
-	            AND type = #{type} </if>
-	        <if test="search != null and search != ''">
-	            AND ( name LIKE CONCAT('%', #{search}, '%')
-	                OR description LIKE CONCAT('%', #{search}, '%')
-	            )
-	        </if>
-	        </where>
-	    <choose>
-	        <when test="sort != null and sort == 'price_asc'"> ORDER BY price ASC
-	        </when>
-	        <when test="sort != null and sort == 'price_desc'">
-	            ORDER BY price DESC
-	        </when>
-	        <when test="sort != null and sort != ''">
-	            ORDER BY ${sort}
-	        </when>
-	        <otherwise>
-	            ORDER BY id DESC
-	        </otherwise>
-	    </choose>
-	    <if test="limit != null and limit != 0">
-	        LIMIT #{limit}
-	    </if>
-	    <if test="offset != null and offset != 0">
-	        OFFSET #{offset}
-	    </if>
+	<select id="getFoodsPagedSorted" resultType="com.dtdat.javaweb.exam.entity.Food">
+		SELECT id, type, image, name, description, price, status FROM food
+		<where>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+			<if test="type != null and type != ''">
+							AND type = #{type}
+			</if>
+			<if test="search != null and search != ''">
+				AND ( name LIKE CONCAT('%', #{search}, '%')
+				OR description LIKE CONCAT('%', #{search}, '%')
+				)
+			</if>
+		</where>
+		<choose>
+			<when test="sort != null and sort == 'price_asc'">
+				ORDER BY price ASC
+			</when>
+			<when test="sort != null and sort == 'price_desc'">
+				ORDER BY price DESC
+			</when>
+			<when test="sort != null and sort != ''">
+				ORDER BY ${sort}
+			</when>
+			<otherwise>
+				ORDER BY id DESC
+			</otherwise>
+		</choose>
+		<if test="limit != null and limit != 0">
+			LIMIT #{limit}
+		</if>
+		<if test="offset != null and offset != 0">
+			OFFSET #{offset}
+		</if>
 	</select>
-	
+
 	<select id="countFoods" resultType="int">
-		SELECT COUNT(id) FROM food WHERE type = #{type}
+		SELECT COUNT(id) FROM food
+		<where>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+			<if test="type != null and type != ''">
+				AND type = #{type}
+			</if>
+			<if test="search != null and search != ''">
+				AND ( name LIKE CONCAT('%', #{search}, '%')
+				OR description LIKE CONCAT('%', #{search}, '%')
+				)
+			</if>
+		</where>
 	</select>
-	
+
 	<select id="getFoodById" resultType="com.dtdat.javaweb.exam.entity.Food">
-		SELECT 
-		id, 
-		type, 
+		SELECT
+		id,
+		type,
 		image,
-		name, 
-		description, 
-		price, 
+		name,
+		description,
+		price,
 		status FROM food
 		WHERE id = #{id}
 	</select>
 
-	<insert id="createFood" parameterType="com.dtdat.javaweb.exam.entity.Food" useGeneratedKeys="true" keyProperty="id">
-	    INSERT INTO food (type, image, name, description, price, status)
-	    VALUES (#{type}, #{image}, #{name}, #{description}, #{price}, #{status})
+	<insert id="createFood" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO food (type, image, name, description, price, status)
+		VALUES (#{type}, #{image}, #{name}, #{description}, #{price}, #{status})
 	</insert>
 
-	<update id="updateFood" parameterType="com.dtdat.javaweb.exam.entity.Food">
-	    UPDATE food
-	    SET
-	        type = #{type},
-	        image = #{image},
-	        name = #{name},
-	        description = #{description},
-	        price = #{price},
-	        status = #{status}
-	    WHERE id = #{id}
+	<update id="updateFood">
+		UPDATE food
+		SET
+		type = #{type},
+		image = #{image},
+		name = #{name},
+		description = #{description},
+		price = #{price},
+		status = #{status}
+		WHERE id = #{id}
 	</update>
 
 	<update id="deleteFood">
-	    UPDATE food
-	    SET status = false
-	    WHERE id = #{id}
+		UPDATE food
+		SET status = false
+		WHERE id = #{id}
 	</update>
 </mapper>

@@ -13,8 +13,4 @@ public class AdminRepositoryImpl implements AdminRepository {
 	public Admin findByUsername(String username) {
 		return adminMapper.findByUsername(username);
 	}
-
-	public void insertAdmin(Admin admin) {
-		adminMapper.insertAdmin(admin);
-	}
 }

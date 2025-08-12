@@ -9,19 +9,25 @@ html {
 
 body {
 	margin: 0;
-	height: 92px;
 	font-family: "Poppins", sans-serif;
 	font-size: 1.6rem;
 	background: #FAFBFC;
 	scroll-behavior: smooth;
-	overflow: auto;
-	overflow: -moz-scrollbars-none;
-	-ms-overflow-style: none;
+	overflow-x: hidden;
 }
 
 body::-webkit-scrollbar {
-	width: 0 !important;
-	display: none;
+	width: 8px;
+}
+
+body::-webkit-scrollbar-thumb {
+	background: #CED4DA;
+	border-radius: 3.5px;
+	cursor: pointer;
+}
+
+body::-webkit-scrollbar-track {
+	background: transparent;
 }
 
 .header {
@@ -76,6 +82,14 @@ body::-webkit-scrollbar {
 	border-radius: 4px;
 	border: 1px solid #CED4DA;
 	z-index: 999;
+	
+	padding: 16px;
+
+	font-weight: 400;
+	font-size: 1.6rem;
+	line-height: 2.4;
+	letter-spacing: 0.5px;
+	vertical-align: middle;
 }
 
 .custom-select {
@@ -84,6 +98,7 @@ body::-webkit-scrollbar {
 
 .custom-select select {
 	appearance: base-select;
+
 }
 
 .custom-select select {
@@ -96,7 +111,7 @@ body::-webkit-scrollbar {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 4px 8px;
+	padding: 16px;
 }
 
 .form-group label,
@@ -159,6 +174,7 @@ body::-webkit-scrollbar {
 #message {
 	width: 872px;
 	height: 100px;
+	resize: vertical;
 }
 
 /* Bottom */
@@ -336,8 +352,20 @@ body::-webkit-scrollbar {
 
 /* Order Success */
 .order-success-body {
-	background-image: url('../images/order-bg.png');
-	height: 100vh;
+    background-image: url('../images/order-bg.png');
+    height: 100vh;
+    background-size: auto 100%;
+    background-repeat: repeat-x; 
+    animation: scrollBackground 3s linear infinite; 
+}
+
+@keyframes scrollBackground {
+    from {
+        background-position: 0 0; 
+    }
+    to {
+        background-position: -100% 0;
+    }
 }
 
 .order-success-container {

@@ -4,6 +4,4 @@ import com.dtdat.javaweb.exam.entity.Admin;
 
 public interface AdminRepository {
 	public Admin findByUsername(String username);
-
-	public void insertAdmin(Admin admin);
 }
