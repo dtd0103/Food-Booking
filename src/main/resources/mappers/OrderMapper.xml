@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dtdat.javaweb.exam.mapper.OrderMapper">
+
+    <resultMap id="orderResultMap" type="com.dtdat.javaweb.exam.entity.Order">
+        <id property="id" column="o_id"/>
+        <result property="userName" column="o_user_name"/>
+        <result property="phoneNumber" column="o_phone_number"/>
+        <result property="wardId" column="o_ward_id"/>
+        <result property="street" column="o_street"/>
+        <result property="message" column="o_message"/>
+        <result property="total" column="o_total"/>
+        <result property="shippingFee" column="o_shipping_fee"/>
+        <result property="createdAt" column="o_created_at"/>
+        <result property="state" column="o_state"/>
+        <association property="ward" javaType="com.dtdat.javaweb.exam.entity.Ward">
+            <id property="id" column="w_id"/>
+            <result property="name" column="w_name"/>
+            <result property="cityId" column="w_city_id"/>
+            <result property="shippingFee" column="w_shipping_fee"/>
+            <association property="city" javaType="com.dtdat.javaweb.exam.entity.City">
+                <id property="id" column="c_id"/>
+                <result property="name" column="c_name"/>
+            </association>
+        </association>
+        <collection property="items" ofType="com.dtdat.javaweb.exam.entity.OrderDetail" autoMapping="true">
+            <id property="id" column="od_id"/>
+            <result property="orderId" column="od_order_id"/>
+            <result property="foodId" column="od_food_id"/>
+            <result property="quantity" column="od_quantity"/>
+            <association property="food" javaType="com.dtdat.javaweb.exam.entity.Food">
+                <id property="id" column="f_id"/>
+                <result property="type" column="f_type"/>
+                <result property="image" column="f_image"/>
+                <result property="name" column="f_name"/>
+                <result property="description" column="f_description"/>
+                <result property="price" column="f_price"/>
+                <result property="status" column="f_status"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <sql id="orderColumns">
+        o.id AS o_id,
+        o.user_name AS o_user_name,
+        o.phone_number AS o_phone_number,
+        o.ward_id AS o_ward_id,
+        o.street AS o_street,
+        o.message AS o_message,
+        o.total AS o_total,
+        o.shipping_fee AS o_shipping_fee,
+        o.created_at AS o_created_at,
+        o.state AS o_state,
+        w.id AS w_id,
+        w.name AS w_name,
+        w.city_id AS w_city_id,
+        w.shipping_fee AS w_shipping_fee,
+        c.id AS c_id,
+        c.name AS c_name
+    </sql>
+
+    <select id="getDashboardSummary" resultType="map">
+        SELECT
+            COALESCE(SUM(CASE WHEN o.created_at BETWEEN #{todayStart} AND #{todayEnd} THEN o.total ELSE 0 END), 0) AS todaySales,
+            COUNT(o.id) AS totalOrders,
+            COUNT(CASE WHEN o.state = 'Shipping' THEN 1 ELSE NULL END) AS shippingOrders,
+            COUNT(CASE WHEN o.state = 'Complete' THEN 1 ELSE NULL END) AS completedOrders,
+            COUNT(CASE WHEN o.state = 'Cancel' THEN 1 ELSE NULL END) AS cancelledOrders
+        FROM
+            `orders` o
+    </select>
+
+    <select id="getSalesChartData" resultType="map">
+        SELECT
+        <choose>
+            <when test="period == 'day'">
+                DATE(created_at) AS label
+            </when>
+            <when test="period == 'month'">
+                DATE_FORMAT(created_at, '%Y-%m') AS label
+            </when>
+            <otherwise>
+                DATE(created_at) AS label
+            </otherwise>
+        </choose>
+            , SUM(total) AS value FROM
+            `orders`
+        WHERE
+            created_at BETWEEN #{startDate} AND #{endDate}
+        GROUP BY
+            label
+        ORDER BY
+            label ASC
+    </select>
+
+    <select id="getOrders" resultMap="orderResultMap">
+        SELECT
+            <include refid="orderColumns"/>,
+            od.id AS od_id,
+            od.order_id AS od_order_id,
+            od.food_id AS od_food_id,
+            od.quantity AS od_quantity,
+            f.id AS f_id,
+            f.type AS f_type,
+            f.image AS f_image,
+            f.name AS f_name,
+            f.description AS f_description,
+            f.price AS f_price,
+            f.status AS f_status
+        FROM
+            `orders` o
+        LEFT JOIN
+            ward w ON o.ward_id = w.id
+        LEFT JOIN
+            city c ON w.city_id = c.id
+        LEFT JOIN
+            order_detail od ON o.id = od.order_id
+        LEFT JOIN
+            food f ON od.food_id = f.id
+        <where>
+            <if test="status != null and status != ''">
+                AND o.state = #{status}
+            </if>
+            <if test="orderId != null">
+                AND o.id = #{orderId}
+            </if>
+            <if test="startDate != null">
+                AND o.created_at &gt;= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND o.created_at &lt;= #{endDate}
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="sortBy == 'createdAt'">
+                o.created_at
+            </when>
+            <when test="sortBy == 'total'">
+                o.total
+            </when>
+            <otherwise>
+                o.created_at
+            </otherwise>
+        </choose>
+        <if test="sortDir == 'desc'">DESC</if>
+        <if test="sortDir == 'asc'">ASC</if>
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countOrders" resultType="int">
+        SELECT
+            COUNT(id)
+        FROM
+            `orders`
+        <where>
+            <if test="status != null and status != ''">
+                AND state = #{status}
+            </if>
+            <if test="orderId != null">
+                AND id = #{orderId}
+            </if>
+            <if test="startDate != null">
+                AND created_at &gt;= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND created_at &lt;= #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="getOrderById" resultMap="orderResultMap">
+        SELECT
+            <include refid="orderColumns"/>,
+            od.id AS od_id,
+            od.order_id AS od_order_id,
+            od.food_id AS od_food_id,
+            od.quantity AS od_quantity,
+            f.id AS f_id,
+            f.type AS f_type,
+            f.image AS f_image,
+            f.name AS f_name,
+            f.description AS f_description,
+            f.price AS f_price,
+            f.status AS f_status
+        FROM
+            `orders` o
+        LEFT JOIN
+            ward w ON o.ward_id = w.id
+        LEFT JOIN
+            city c ON w.city_id = c.id
+        LEFT JOIN
+            order_detail od ON o.id = od.order_id
+        LEFT JOIN
+            food f ON od.food_id = f.id
+        WHERE
+            o.id = #{id}
+    </select>
+
+    <insert id="insertOrder" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `orders` (user_name, phone_number, ward_id, street, message, total, shipping_fee, created_at, state)
+        VALUES (
+            #{userName},
+            #{phoneNumber},
+            #{wardId},
+            #{street},
+            #{message},
+            #{total},
+            #{shippingFee},
+            NOW(), 'new' )
+    </insert>
+
+    <insert id="insertOrderItems">
+        INSERT INTO order_detail (order_id, food_id, quantity)
+        VALUES
+        <foreach collection="items" item="item" separator=",">
+            (#{orderId}, #{item.foodId}, #{item.quantity})
+        </foreach>
+    </insert>
+
+    <update id="updateOrderState">
+        UPDATE `orders`
+        SET state = #{newState}
+        WHERE id = #{orderId}
+    </update>
+
+</mapper>

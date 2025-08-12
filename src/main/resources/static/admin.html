@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Food Booking - Admin Page</title>
+	<link rel="stylesheet" href="/css/admin.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+		rel="stylesheet" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+	<div class="dashboard-container">
+		<aside class="sidebar">
+			<div class="logo">
+				<img src="/images/your-logo.png" alt="Logo">
+			</div>
+			<nav class="nav-menu">
+				<ul>
+					<li class="active"><a href="#"><img src="/images/dashboard-icon.svg" alt=""> Dashboard</a></li>
+					<li><a href="#"><img src="/images/manage-item-icon.svg" alt=""> Manage Item</a></li>
+				</ul>
+			</nav>
+			<div class="footer-menu">
+				<ul>
+					<li><a href="#"><img src="/images/change-password-icon.svg" alt=""> Change Password</a></li>
+					<li><a href="#"><img src="/images/logout-icon.svg" alt=""> Log out</a></li>
+				</ul>
+			</div>
+		</aside>
+
+		<main class="main-content">
+			<header class="main-header">
+				<div class="dashboard-title">Dashboard</div>
+				<div class="search-bar">
+					<input type="text" id="order-search-input" placeholder="Search...">
+					<button id="search-button">Search</button>
+				</div>
+			</header>
+
+			<section class="overview-section">
+				<div class="card sales-today">
+					<div class="card-icon">💰</div>
+					<div class="card-content">
+						<div class="card-value" id="today-sales">3.000.000 đ</div>
+						<div class="card-title">Today's Sales</div>
+					</div>
+				</div>
+				<div class="card total-orders">
+					<div class="card-icon">📊</div>
+					<div class="card-content">
+						<div class="card-value" id="total-orders">60</div>
+						<div class="card-title">Total</div>
+					</div>
+				</div>
+				<div class="card shipping-orders">
+					<div class="card-icon">🚚</div>
+					<div class="card-content">
+						<div class="card-value" id="shipping-orders">1</div>
+						<div class="card-title">Shipping</div>
+					</div>
+				</div>
+				<div class="card completed-orders">
+					<div class="card-icon">✅</div>
+					<div class="card-content">
+						<div class="card-value" id="completed-orders">50</div>
+						<div class="card-title">Complete</div>
+					</div>
+				</div>
+				<div class="card canceled-orders">
+					<div class="card-icon">❌</div>
+					<div class="card-content">
+						<div class="card-value" id="canceled-orders">9</div>
+						<div class="card-title">Cancel</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="chart-section">
+				<div class="chart-header">
+					<div class="chart-title">Sales Trend</div>
+					<div class="chart-time-filters">
+						<button class="chart-filter-btn active">Day</button>
+						<button class="chart-filter-btn">Week</button>
+						<button class="chart-filter-btn">Month</button>
+					</div>
+				</div>
+				<div class="chart-container">
+					<canvas id="salesChart"></canvas>
+				</div>
+				<div class="chart-legend">
+					<div class="legend-item">
+						<span class="legend-color" style="background-color: #f5ad7b;"></span>
+						VALUE = 1.000.000đ
+					</div>
+				</div>
+			</section>
+
+			<section class="order-list-section">
+				<div class="order-list-header">
+					<div class="order-filters">
+						<div class="filter-group">
+							<span class="filter-label">Filter</span>
+							<button class="filter-btn filter-new active" data-status="new">New <span
+									class="filter-count"></span></button>
+							<button class="filter-btn filter-completed" data-status="completed">Completed <span
+									class="filter-count"></span></button>
+							<button class="filter-btn filter-canceled" data-status="canceled">Cancel <span
+									class="filter-count"></span></button>
+							<button class="filter-btn filter-shipping" data-status="shipping">Shipping <span
+									class="filter-count"></span></button>
+						</div>
+						<div class="filter-group date-filter">
+							<select id="time-range-select">
+								<option value="all">Today</option>
+								<option value="thisWeek">Week</option>
+								<option value="thisMonth">Month</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="order-grid" id="order-grid">
+					<div class="order-card">
+						<div class="order-card-header">
+							<div class="order-id">Order# 001</div>
+							<div class="order-date">20 May 2024</div>
+						</div>
+						<div class="order-item-list">
+							<div class="order-item">
+								<img class="order-item-img" src="/uploads/images/foods/com-ga.jpg"
+									alt="Cơm Gà Đặc Biệt">
+								<div class="order-item-details">
+									<div class="order-item-name">Cơm Gà Đặc Gừ Từ Sốt Mắm Tỏi</div>
+									<div class="order-item-desc">Đùi gà góc tư 4 xốt mỡ ...</div>
+								</div>
+								<div class="order-item-right">
+									<div class="order-item-price">60.000 <span class="currency">đ</span></div>
+									<div class="order-item-quantity">Quantity: <span class="qty-value">2</span></div>
+								</div>
+							</div>
+						</div>
+						<div class="order-card-footer">
+							<div class="total-price">60.000 <span class="currency">đ</span></div>
+							<button class="order-status-btn new">New</button>
+						</div>
+					</div>
+
+					<div class="order-card">
+						<div class="order-card-header">
+							<div class="order-id">Order# 002</div>
+							<div class="order-date">20 May 2024</div>
+						</div>
+						<div class="order-item-list">
+							<div class="order-item">
+								<img class="order-item-img" src="/uploads/images/foods/combo-ga.jpg"
+									alt="Combo Gà Xối Mỡ + Coca">
+								<div class="order-item-details">
+									<div class="order-item-name">Combo Gà Xối Mỡ + CáI Chua - Bao Ngon</div>
+									<div class="order-item-desc">Gà Xối Mỡ + Cái Chua + ...</div>
+								</div>
+								<div class="order-item-right">
+									<div class="order-item-price">60.000 <span class="currency">đ</span></div>
+									<div class="order-item-quantity">Quantity: <span class="qty-value">1</span></div>
+								</div>
+							</div>
+						</div>
+						<div class="order-card-footer">
+							<div class="total-price">60.000 <span class="currency">đ</span></div>
+							<button class="order-status-btn new">New</button>
+						</div>
+					</div>
+
+					<div class="order-card">
+						<div class="order-card-header">
+							<div class="order-id">Order# 003</div>
+							<div class="order-date">20 May 2024</div>
+						</div>
+						<div class="order-item-list">
+							<div class="order-item">
+								<img class="order-item-img" src="/uploads/images/foods/com-rut-xuong.jpg"
+									alt="Cơm Gà Đùi Rút Xương Chiên Nước Mắm">
+								<div class="order-item-details">
+									<div class="order-item-name">Cơm Gà Đùi Rút Xương Chiên Nước Mắm</div>
+									<div class="order-item-desc">(Thịt đùi gà tươi đã rút xương ...</div>
+								</div>
+								<div class="order-item-right">
+									<div class="order-item-price">60.000 <span class="currency">đ</span></div>
+									<div class="order-item-quantity">Quantity: <span class="qty-value">1</span></div>
+								</div>
+							</div>
+						</div>
+						<div class="order-card-footer">
+							<div class="total-price">60.000 <span class="currency">đ</span></div>
+							<button class="order-status-btn canceled">Canceled</button>
+						</div>
+					</div>
+
+					<div class="order-card">
+						<div class="order-card-header">
+							<div class="order-id">Order# 004</div>
+							<div class="order-date">20 May 2024</div>
+						</div>
+						<div class="order-item-list">
+							<div class="order-item">
+								<img class="order-item-img" src="/uploads/images/foods/combo-ga.jpg"
+									alt="Combo Gà Xối Mỡ + Coca">
+								<div class="order-item-details">
+									<div class="order-item-name">Combo Gà Xối Mỡ + Cái Chua - Bao Ngon</div>
+									<div class="order-item-desc">Gà Xối Mỡ + Cái Chua + ...</div>
+								</div>
+								<div class="order-item-right">
+									<div class="order-item-price">60.000 <span class="currency">đ</span></div>
+									<div class="order-item-quantity">Quantity: <span class="qty-value">1</span></div>
+								</div>
+							</div>
+						</div>
+						<div class="order-card-footer">
+							<div class="total-price">60.000 <span class="currency">đ</span></div>
+							<button class="order-status-btn canceled">Canceled</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="pagination" id="pagination-controls">
+					<button disabled>Previous</button>
+					<button class="active">1</button>
+					<button>2</button>
+					<button>Next</button>
+				</div>
+			</section>
+		</main>
+	</div>
+</body>
+
+</html>

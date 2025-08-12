@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Food Booking</title>
+	<link rel="stylesheet" href="/css/style.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+		rel="stylesheet" />
+	<link rel="icon" type="image/x-icon" href="/images/favicon.svg">
+</head>
+
+<body>
+	<header>
+		<div class="header-inner">
+			<a href="/index.html"><img src="/images/logo.png" class="logo" alt="" /></a>
+			<form id="top-search-input" class="search-inner top">
+				<img src="/images/union.svg" alt="Search Icon" class="search-icon" />
+				<input type="text" placeholder="Find your favorite food..." class="search-input" value="" />
+			</form>
+			<div class="header-action">
+				<img src="/images/basket-logo.svg" class="basket-logo" alt="" />
+				<div class="check-basket-btn">
+					<div class="basket-count-total"></div>
+					<img src="/images/basket-logo-white.svg" class="basket-logo-white" alt="" />
+					<div class="basket-total"></div>
+				</div>
+				<div class="check-order-btn">
+					<img src="/images/order-icon.svg" />
+					<p>Your Order</p>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="toast-message"></div>
+
+	<div class="main">
+		<div class="hero" id="hero">
+			<img src="/images/hero.png" class="hero-img" />
+
+			<img class="hero-title" src="/images/hero-heading.svg" />
+
+			<div class="search">
+				<form class="search-inner">
+					<img src="/images/union.svg" alt="Search Icon" class="search-icon" />
+					<input type="text" placeholder="Find your favorite food..." class="search-input" value="" />
+				</form>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="sort">
+				<div class="sort-field"> <span>Price: From low to high</span> <img src="/images/sort-icon.svg" /> </div>
+				<div class="sort-dropdown">
+					<div class="sort-dropdown-item low-to-high">From low to high</div>
+					<div class="sort-dropdown-item high-to-low">From high to low</div>
+				</div>
+			</div>
+
+			<div class="line"></div>
+
+			<div class="food-type-picker">
+				<div class="picker active food-picker">Food</div>
+				<div class="picker drink-picker">Drink</div>
+			</div>
+
+			<div class="food-list">
+
+				<!--<div class="food-item active">
+					<img src="/images/sample-item.png" class="food-item-image" />
+					<div class="food-item-info">
+						<div class="food-item-name">Cơm Gà Đùi Góc Tư Sốt Mắm Tỏi</div>
+						<div class="food-item-description">Đùi gà tươi góc 4 xối mỡ + sốt mắm tỏi + Cơm + dưa leo +
+							salad + canh</div>
+						<div class="food-item-price">40.000 đ</div>
+						<div class="food-item-action">
+							<div class="item-delete-btn">
+								<img src="/images/delete-icon.svg" />
+							</div>
+							<div class="item-number-input">
+								<img src="/images/minus.svg" />
+								<span class="item-count">1</span>
+								<img src="/images/plus.svg" />
+							</div>
+						</div>
+					</div>
+				</div> -->
+
+
+			</div>
+
+			<div class="pagination-container">
+				<span class="pagination-total-items">Total 200 items</span>
+
+				<ul class="pagination">
+
+				</ul>
+
+				<select class="page-size" id="page-size">
+					<option value="4">4 / page</option>
+					<option value="8">8 / page</option>
+					<option value="12">12 / page</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="line"></div>
+
+		<div class="item-popup">
+			<div class="item-popup-header">
+				<div class="item-popup-title">Basket</div>
+				<img src="/images/out-icon.svg" class="item-popup-close" />
+			</div>
+
+			<div class="item-popup-info">
+
+			</div>
+
+			<div class="item-popup-footer">
+				<div class="item-popup-justify">
+					<div class="item-popup-minus"><img src="/images/popup-minus.svg" /></div>
+					<span class="item-popup-count"> 1 </span>
+					<div class="item-popup-plus"><img src="/images/popup-plus.svg" /></div>
+				</div>
+				<div class="item-popup-add"></div>
+			</div>
+		</div>
+
+
+
+		<div class="basket-popup">
+			<div class="basket-popup-header">
+				<div class="basket-popup-title">Basket</div>
+				<img src="/images/out-icon.svg" class="basket-popup-close" />
+			</div>
+
+			<div class="basket-popup-list">
+
+			</div>
+
+
+			<div class="basket-popup-footer">
+				<div class="basket-popup-total">
+					<div class="basket-popup-total-label">Total</div>
+					<div class="basket-popup-total-price">0<span> đ</span></div>
+				</div>
+				<a href="checkout-form.html">
+					<div class="basket-popup-order">Place Order</div>
+				</a>
+			</div>
+		</div>
+
+
+		<div class="order-popup">
+			<div class="order-popup-header">
+				<div class="order-popup-title">Your Order</div>
+				<img src="/images/out-icon.svg" class="order-popup-close" />
+			</div>
+
+			<div class="steper">
+				<div class="steper-phases">
+					<div class="steper-phase">
+						<img class="stepper-icon-1" src="/images/steper-finished.svg">
+						<div class="steper-line steper-line-1"></div>
+					</div>
+					<div class="steper-phase">
+						<img class="stepper-icon-2" src="/images/steper-finished.svg">
+						<div class="steper-line steper-line-2"></div>
+					</div>
+					<div class="steper-phase">
+						<img class="stepper-icon-3" src="/images/steper-progress.svg">
+						<div class="steper-line steper-line-3"></div>
+					</div>
+					<div class="steper-phase">
+						<img class="stepper-icon-4" src="/images/stepper-new.svg">
+					</div>
+				</div>
+				<div class="stepper-name">
+					<div>Order placed successfully</div>
+					<div>Preparing your order</div>
+					<div>Shipping</div>
+					<div>Completed</div>
+				</div>
+			</div>
+
+			<div class="form-bottom">
+				<div class="order-code">Order code: <span id="order-code-span"></span></div>
+
+				<div class="order-list">
+				</div>
+
+				<div class="order-show-more">
+					<img src="/images/double-arrow.svg" class="show-more-icon" />
+				</div>
+
+				<div class="order-price-info">
+					<div class="label">Total</div>
+					<div class="fee" id="total-items-price"></div>
+				</div>
+
+				<div class="order-price-info">
+					<div class="label">Shipping fee</div>
+					<div class="fee" id="shipping-fee-display"></div>
+				</div>
+
+				<div class="line"></div>
+
+				<div class="order-total">
+					<div class="total-label">Total bill</div>
+					<div class="total-price" id="total-bill-price"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer>
+		<div class="container footer-inner">
+			<img src="/images/logo-bottom.png" class="logo-bottom" />
+			<div class="footer-info">
+				<div class="contact">CONTACT</div>
+				<div class="contact-row">
+					<img class="contact-icon" src="/images/contact-1.svg" />
+					<p class="contact-info"><strong>Hotline:</strong> 1900 1080</p>
+				</div>
+				<div class="contact-row">
+					<img class="contact-icon" src="/images/contact-2.svg" />
+					<p class="contact-info"> <strong>Address:</strong> 19 Hoang Van Thu str. 2 Ward, Tan Binh
+						District, Ho Chi Minh City.</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<div class="overlay"></div>
+	</div>
+	<script type="module" src="/js/script.js"></script>
+</body>
+
+</html>

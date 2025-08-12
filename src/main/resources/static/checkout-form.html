@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Food Booking - Checkout Page</title>
+	<link rel="stylesheet" href="/css/checkout-form.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+		rel="stylesheet" />
+</head>
+
+<body>
+	<div class="header">
+		<a href="/index.html"><img src="/images/logo.png" class="logo" alt="" /></a>
+	</div>
+
+	<div class="container">
+		<h1 class="title">Delivery Information</h1>
+		<form id="checkout-form" method="post">
+			<div class="row">
+				<div class="form-group">
+					<label for="name">Your Full Name</label>
+					<input type="text" id="name" name="name" required />
+				</div>
+
+				<div class="form-group">
+					<label for="phone">Your Phone Number</label>
+					<input type="tel" id="phone" name="phone" required />
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="custom-select">
+					<p class="select-label">City/ Province</p>
+					<select id="city" name="city" required>
+					</select>
+				</div>
+
+				<div class="custom-select">
+					<p class="select-label">Commune/ Ward</p>
+					<select id="ward" name="ward" required>
+
+					</select>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="form-group">
+					<label for="street">Street Name, Building, House No.</label>
+					<input type="text" id="street" name="street" required />
+				</div>
+			</div>
+
+			<div class="row">
+				<iframe
+					src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.078984372936!2d106.66346227586892!3d10.805262558659438!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529004b06c3af%3A0x2190cf243e190318!2zVMOyYSBuaMOgIFdBU0VDTw!5e0!3m2!1svi!2s!4v1752490817097!5m2!1svi!2s"
+					width="600" height="253" style="border:0;" allowfullscreen="" loading="lazy"
+					referrerpolicy="no-referrer-when-downgrade" id="map"></iframe>
+
+				<a id="view-map-btn" target="_blank"
+					href="https://www.google.com/maps?ll=10.805257,106.666037&z=15&t=m&hl=vi&gl=US&mapclient=embed&cid=2418660754465555224">View
+					Map</a>
+			</div>
+
+			<div class="row">
+				<div class="form-group">
+					<label id="message-label" for="message">Message</label>
+					<textarea id="message" name="message" placeholder="Your message...">
+					</textarea>
+				</div>
+			</div>
+
+			<div class="form-bottom">
+				<div class="order-code">Order summary:</div>
+
+				<div class="order-list">
+
+
+					
+				</div>
+
+				<div class="order-price-info">
+					<div class="label">Total</div>
+					<div class="fee" id="total-price">180.000</div>
+				</div>
+
+				<div class="order-price-info">
+					<div class="label">Shipping fee</div>
+					<div class="fee" id="shipping-fee">0</div>
+				</div>
+
+				<div class="line"></div>
+
+				<div class="order-total">
+					<div class="total-label">Total bill</div>
+					<div class="total-price-and-ship">240.000 <div>đ</div>
+					</div>
+				</div>
+
+				<div class="form-action">
+					<button type="reset" class="form-button form-cancel-btn" value="cancel">Cancel</button>
+					<button type="submit" class="form-button form-submit-btn" value="order">Place Order</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<script type="module" src="/js/checkout-form.js"></script>
+</body>
+
+</html>
